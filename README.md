@@ -63,7 +63,9 @@ tableView.pdHeaderRefreshViewHeight = 100;
 
 ## Special Thanks
 
-PDPullToRefresh is Inspired by [SVPullToRefresh](https://github.com/samvermette/SVPullToRefresh)
+PDPullToRefresh is Inspired by [半糖App](https://itunes.apple.com/cn/app/ban-tang/id955357564?mt=8)、[SVPullToRefresh](https://github.com/samvermette/SVPullToRefresh)
+
+
 
 ## License
 PDPullToRefresh is available under the MIT license. See the LICENSE file for more info.
