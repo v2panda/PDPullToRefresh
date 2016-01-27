@@ -2,7 +2,7 @@
 
 * An easy way to use pull-to-refresh
 
-![Gif](http://7xnmlk.com1.z0.glb.clouddn.com/blogcc.gif)
+![Gif](http://7xnmlk.com1.z0.glb.clouddn.com/PDPullToRefresh.gif)
 
 ## Installation
 
