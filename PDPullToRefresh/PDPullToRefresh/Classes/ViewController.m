@@ -20,13 +20,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self initTableView];
+    [self initUI];
     
     [self addPDRefresh];
 }
 
-- (void)addPDRefresh
-{
+- (void)addPDRefresh {
     [self.tableView pd_addHeaderRefreshWithNavigationBar:YES andActionHandler:^{
         double delayInSeconds = 3.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
@@ -35,7 +34,6 @@
             [self.tableView.pdHeaderRefreshView stopRefreshing];
         });
     }];
-//    [self.tableView.pdHeaderRefreshView startRefreshing];
     
     [self.tableView pd_addFooterRefreshWithNavigationBar:YES andActionHandler:^{
         double delayInSeconds = 3.0;
@@ -47,30 +45,30 @@
     }];
 }
 
-- (void)initTableView
-{
-    self.tableView = [[UITableView alloc]initWithFrame:self.view.bounds];
-    self.tableView.dataSource = self;
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"TableViewCell"];
+- (void)initUI {
     [self.view addSubview:self.tableView];
 }
 
 #pragma mark -- UITableViewDataSource
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 15;
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell" forIndexPath:indexPath];
     cell.textLabel.text = [NSString stringWithFormat:@"第%ld条",(long)indexPath.row];
     return cell;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma getter&setter 
+- (UITableView *)tableView {
+    if (!_tableView) {
+        _tableView = [[UITableView alloc]initWithFrame:self.view.bounds];
+        _tableView.dataSource = self;
+        [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"TableViewCell"];
+    }
+    return _tableView;
 }
 
 @end
