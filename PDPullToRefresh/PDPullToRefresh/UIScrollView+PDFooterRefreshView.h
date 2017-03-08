@@ -12,11 +12,13 @@ typedef void(^ActionHandler)(void);
 
 @class PDFooterRefreshView;
 @interface UIScrollView (PDFooterRefreshView)
+
 /**
  *  下拉滑动距离 - 下拉View的高
  *   Default is 80
  */
 @property (nonatomic, assign) CGFloat pdFooterRefreshViewHeight;
+
 /**
  *  上拉刷新View
  */
@@ -27,13 +29,18 @@ typedef void(^ActionHandler)(void);
  *
  *  @param actionHandler 回调
  */
-- (void)pd_addFooterRefreshWithNavigationBar:(BOOL)navBar andActionHandler:(ActionHandler)actionHandler;
+- (void)pd_addFooterRefreshWithNavigationBar:(BOOL)navBar
+                            andActionHandler:(ActionHandler)actionHandler;
 
 @end
 
 @interface PDFooterRefreshView : UIView
 
-- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView withNavigationBar:(BOOL)navBar andRefreshViewHeight:(CGFloat)refreshViewHeight andActionHandler:(ActionHandler)actionHandler;
+- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView
+                           withNavigationBar:(BOOL)navBar
+                        andRefreshViewHeight:(CGFloat)refreshViewHeight
+                            andActionHandler:(ActionHandler)actionHandler;
+
 /**
  *  停止刷新
  */

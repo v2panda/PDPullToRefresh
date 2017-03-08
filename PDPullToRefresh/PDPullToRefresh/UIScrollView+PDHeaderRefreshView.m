@@ -11,29 +11,24 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreText/CoreText.h>
 
-
 static char UIScrollViewPDHeaderRefreshView;
 static char PDHeaderRefreshViewHeight;
 
 @implementation UIScrollView (PDHeaderRefreshView)
 
-- (void)setPdHeaderRefreshView:(PDHeaderRefreshView *)pdHeaderRefreshView
-{
+- (void)setPdHeaderRefreshView:(PDHeaderRefreshView *)pdHeaderRefreshView {
     objc_setAssociatedObject(self, &UIScrollViewPDHeaderRefreshView, pdHeaderRefreshView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (PDHeaderRefreshView *)pdHeaderRefreshView
-{
+- (PDHeaderRefreshView *)pdHeaderRefreshView {
     return objc_getAssociatedObject(self, &UIScrollViewPDHeaderRefreshView);
 }
 
-- (void)setPdHeaderRefreshViewHeight:(CGFloat)pdHeaderRefreshViewHeight
-{
+- (void)setPdHeaderRefreshViewHeight:(CGFloat)pdHeaderRefreshViewHeight {
     objc_setAssociatedObject(self, &PDHeaderRefreshViewHeight, @(MAX(0, pdHeaderRefreshViewHeight)), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (CGFloat)pdHeaderRefreshViewHeight
-{
+- (CGFloat)pdHeaderRefreshViewHeight {
 #if CGFLOAT_IS_DOUBLE
     return [objc_getAssociatedObject(self, &PDHeaderRefreshViewHeight) doubleValue];
 #else
@@ -41,13 +36,16 @@ static char PDHeaderRefreshViewHeight;
 #endif
 }
 
-- (void)pd_addHeaderRefreshWithNavigationBar:(BOOL)navBar andActionHandler:(ActionHandler)actionHandler
-{
+- (void)pd_addHeaderRefreshWithNavigationBar:(BOOL)navBar
+                            andActionHandler:(ActionHandler)actionHandler {
     if (!self.pdHeaderRefreshViewHeight) {
         self.pdHeaderRefreshViewHeight = 80;
     }
     
-    self.pdHeaderRefreshView = [[PDHeaderRefreshView alloc]initWithAssociatedScrollView:self withNavigationBar:navBar andRefreshViewHeight:self.pdHeaderRefreshViewHeight andActionHandler:actionHandler];
+    self.pdHeaderRefreshView = [[PDHeaderRefreshView alloc]initWithAssociatedScrollView:self
+                                                                      withNavigationBar:navBar
+                                                                   andRefreshViewHeight:self.pdHeaderRefreshViewHeight
+                                                                       andActionHandler:actionHandler];
     
     [self insertSubview:self.pdHeaderRefreshView atIndex:0];
 }
@@ -81,15 +79,16 @@ static const double pFontSize = 26.0f;
 /** 光晕动画ID */
 static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
 
-@implementation PDHeaderRefreshView
-{
+@implementation PDHeaderRefreshView {
     CGFloat originOffset;
     CGFloat PDPullToRefreshViewHeight;
     BOOL isStop;
 }
 
-- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView withNavigationBar:(BOOL)navBar andRefreshViewHeight:(CGFloat)refreshViewHeight andActionHandler:(ActionHandler)actionHandler
-{
+- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView
+                           withNavigationBar:(BOOL)navBar
+                        andRefreshViewHeight:(CGFloat)refreshViewHeight
+                            andActionHandler:(ActionHandler)actionHandler {
     self = [super initWithFrame:CGRectMake(0, -refreshViewHeight, scrollView.bounds.size.width, refreshViewHeight)];
     if (self) {
         if (navBar) {
@@ -116,15 +115,13 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
     return self;
 }
 
-- (void)setProgress:(CGFloat)progress
-{
+- (void)setProgress:(CGFloat)progress {
     self.center = CGPointMake(self.center.x, -fabs(self.associatedScrollView.contentOffset.y+originOffset)/2);
     CGFloat diff = fabs(self.associatedScrollView.contentOffset.y + originOffset) - PDPullToRefreshViewHeight ;
     self.pathLayer.strokeEnd = progress;
     
     if (diff > 0) {
-        if (!self.associatedScrollView.tracking)
-        {
+        if (!self.associatedScrollView.tracking) {
             if (!isStop) {
                 return;
             }
@@ -144,28 +141,18 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
     }
 }
 
--(void)startRefreshing
-{
+-(void)startRefreshing {
     [self addRefreshAnimation];
     isStop = NO;
     [UIView animateWithDuration:0.3 animations:^{
-        
         self.associatedScrollView.contentInset = UIEdgeInsetsMake(PDPullToRefreshViewHeight + originOffset, 0, 0, 0);
-        
     } completion:^(BOOL finished) {
         self.handleBlock();
         isStop = YES;
-//        [self stopRefreshing];
-        NSLog(@"startRefreshing - END");
     }];
-
-    
 }
 
-- (void)stopRefreshing
-{
-//    self.progress = 1.0;
-    
+- (void)stopRefreshing {
     [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.alpha = 0.0f;
         self.associatedScrollView.contentInset = UIEdgeInsetsMake(originOffset+0.1, 0, 0, 0);
@@ -179,8 +166,7 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
 
 #pragma mark - Animation Method
 
-- (CAShapeLayer *)setupDefaultLayer:(NSString *)animationString
-{
+- (CAShapeLayer *)setupDefaultLayer:(NSString *)animationString {
     if (self.pathLayer != nil) {
         [self.pathLayer removeFromSuperlayer];
         self.pathLayer = nil;
@@ -246,8 +232,7 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
     return pathLayer;
 }
 
-- (void)addPullAnimation
-{
+- (void)addPullAnimation {
     // 这就是生活
     CAShapeLayer *pathLayer = [self setupDefaultLayer:@"C'est La Vie"];
     [self.animationLayer addSublayer:pathLayer];
@@ -255,8 +240,7 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
     self.isFlash = YES;
 }
 
-- (void)addRefreshAnimation
-{
+- (void)addRefreshAnimation {
     _animationPacing = kCAMediaTimingFunctionEaseIn;
     
     // 设置渐变层参数
@@ -283,8 +267,7 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
 }
 
 /** 开启动画 */
-- (void)startAnimating
-{
+- (void)startAnimating {
     static NSString *gradientStartPointKey = @"startPoint";
     static NSString *gradientEndPointKey = @"endPoint";
     
@@ -311,15 +294,15 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
 }
 
 /** 结束动画 */
-- (void)stopAnimating
-{
+- (void)stopAnimating {
     [self.gradientLayer removeFromSuperlayer];
     self.gradientLayer = nil;
 }
 
 #pragma mark -- KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
-{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary<NSString *,id> *)change
+                       context:(void *)context {
     if ([keyPath isEqualToString:@"contentOffset"]) {
         CGPoint contentOffset = [[change objectForKey:NSKeyValueChangeNewKey]CGPointValue];
         if (contentOffset.y + originOffset <= 0) {
@@ -328,11 +311,9 @@ static NSString *const kAnimationKey = @"PDHeaderRefreshViewAnimationKey";
     }
 }
 
-#pragma dealloc
+#pragma mark dealloc
 -(void)dealloc{
-    
     [self.associatedScrollView removeObserver:self forKeyPath:@"contentOffset"];
-    
 }
 
 @end

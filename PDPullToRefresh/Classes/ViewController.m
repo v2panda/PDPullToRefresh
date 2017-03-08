@@ -49,19 +49,21 @@
     [self.view addSubview:self.tableView];
 }
 
-#pragma mark -- UITableViewDataSource
+#pragma mark UITableViewDataSource
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 15;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell"
+                                                            forIndexPath:indexPath];
     cell.textLabel.text = [NSString stringWithFormat:@"第%ld条",(long)indexPath.row];
     return cell;
 }
 
-#pragma getter&setter 
+#pragma mark getter&setter
+
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:self.view.bounds];

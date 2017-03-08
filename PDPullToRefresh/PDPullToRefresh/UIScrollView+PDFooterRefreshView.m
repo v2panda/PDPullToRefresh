@@ -11,28 +11,23 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreText/CoreText.h>
 
-
 static char UIScrollViewPDFooterRefreshView;
 static char PDFooterRefreshViewHeight;
 
 @implementation UIScrollView (PDFooterRefreshView)
-- (void)setPdFooterRefreshView:(PDFooterRefreshView *)pdFooterRefreshView
-{
+- (void)setPdFooterRefreshView:(PDFooterRefreshView *)pdFooterRefreshView {
     objc_setAssociatedObject(self, &UIScrollViewPDFooterRefreshView, pdFooterRefreshView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (PDFooterRefreshView *)pdFooterRefreshView
-{
+- (PDFooterRefreshView *)pdFooterRefreshView {
     return objc_getAssociatedObject(self, &UIScrollViewPDFooterRefreshView);
 }
 
-- (void)setPdFooterRefreshViewHeight:(CGFloat)pdFooterRefreshViewHeight
-{
+- (void)setPdFooterRefreshViewHeight:(CGFloat)pdFooterRefreshViewHeight {
     objc_setAssociatedObject(self, &PDFooterRefreshViewHeight, @(MAX(0, pdFooterRefreshViewHeight)), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (CGFloat)pdFooterRefreshViewHeight
-{
+- (CGFloat)pdFooterRefreshViewHeight {
 #if CGFLOAT_IS_DOUBLE
     return [objc_getAssociatedObject(self, &PDFooterRefreshViewHeight) doubleValue];
 #else
@@ -40,13 +35,16 @@ static char PDFooterRefreshViewHeight;
 #endif
 }
 
-- (void)pd_addFooterRefreshWithNavigationBar:(BOOL)navBar andActionHandler:(ActionHandler)actionHandler
-{
+- (void)pd_addFooterRefreshWithNavigationBar:(BOOL)navBar
+                            andActionHandler:(ActionHandler)actionHandler {
     if (!self.pdFooterRefreshViewHeight) {
         self.pdFooterRefreshViewHeight = 80;
     }
     
-    self.pdFooterRefreshView = [[PDFooterRefreshView alloc]initWithAssociatedScrollView:self withNavigationBar:navBar andRefreshViewHeight:self.pdFooterRefreshViewHeight andActionHandler:actionHandler];
+    self.pdFooterRefreshView = [[PDFooterRefreshView alloc]initWithAssociatedScrollView:self
+                                                                      withNavigationBar:navBar
+                                                                   andRefreshViewHeight:self.pdFooterRefreshViewHeight
+                                                                       andActionHandler:actionHandler];
     [self insertSubview:self.pdFooterRefreshView atIndex:0];
 }
 
@@ -79,16 +77,17 @@ static const double pFontSize = 26.0f;
 /** 光晕动画ID */
 static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
 
-@implementation PDFooterRefreshView
-{
+@implementation PDFooterRefreshView {
     CGFloat originOffset;
     CGSize contentSize;
     CGFloat PDPullToRefreshViewHeight;
     BOOL isShow;
 }
 
-- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView withNavigationBar:(BOOL)navBar andRefreshViewHeight:(CGFloat)refreshViewHeight andActionHandler:(ActionHandler)actionHandler
-{
+- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView
+                           withNavigationBar:(BOOL)navBar
+                        andRefreshViewHeight:(CGFloat)refreshViewHeight
+                            andActionHandler:(ActionHandler)actionHandler {
     self = [super initWithFrame:CGRectMake(0, scrollView.frame.size.height, scrollView.frame.size.width, refreshViewHeight)];
     if (self) {
         if (navBar) {
@@ -114,8 +113,7 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
     return self;
 }
 
-- (void)setProgress:(CGFloat)progress
-{
+- (void)setProgress:(CGFloat)progress {
     
     CGFloat diff =  self.associatedScrollView.contentOffset.y - (self.associatedScrollView.contentSize.height - self.associatedScrollView.bounds.size.height) - PDPullToRefreshViewHeight;
     self.pathLayer.strokeEnd = progress;
@@ -142,8 +140,7 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
     }
 }
 
-- (void)stopRefreshing
-{
+- (void)stopRefreshing {
     [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.alpha = 0.0f;
         self.associatedScrollView.contentInset = UIEdgeInsetsMake(originOffset, 0, 0, 0);
@@ -159,8 +156,7 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
 
 #pragma mark - Animation Method
 
-- (CAShapeLayer *)setupDefaultLayer:(NSString *)animationString
-{
+- (CAShapeLayer *)setupDefaultLayer:(NSString *)animationString {
     if (self.pathLayer != nil) {
         [self.pathLayer removeFromSuperlayer];
         self.pathLayer = nil;
@@ -178,15 +174,13 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
     CFArrayRef runArray = CTLineGetGlyphRuns(line);
     
     // for each RUN
-    for (CFIndex runIndex = 0; runIndex < CFArrayGetCount(runArray); runIndex++)
-    {
+    for (CFIndex runIndex = 0; runIndex < CFArrayGetCount(runArray); runIndex++) {
         // Get FONT for this run
         CTRunRef run = (CTRunRef)CFArrayGetValueAtIndex(runArray, runIndex);
         CTFontRef runFont = CFDictionaryGetValue(CTRunGetAttributes(run), kCTFontAttributeName);
         
         // for each GLYPH in run
-        for (CFIndex runGlyphIndex = 0; runGlyphIndex < CTRunGetGlyphCount(run); runGlyphIndex++)
-        {
+        for (CFIndex runGlyphIndex = 0; runGlyphIndex < CTRunGetGlyphCount(run); runGlyphIndex++) {
             // get Glyph & Glyph-data
             CFRange thisGlyphRange = CFRangeMake(runGlyphIndex, 1);
             CGGlyph glyph;
@@ -226,8 +220,7 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
     return pathLayer;
 }
 
-- (void)addPullAnimation
-{
+- (void)addPullAnimation {
     // 这就是生活
     CAShapeLayer *pathLayer = [self setupDefaultLayer:@"C'est La Vie"];
     [self.animationLayer addSublayer:pathLayer];
@@ -235,8 +228,7 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
     self.isFlash = YES;
 }
 
-- (void)addRefreshAnimation
-{
+- (void)addRefreshAnimation {
     _animationPacing = kCAMediaTimingFunctionEaseIn;
     
     // 设置渐变层参数
@@ -258,14 +250,12 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
 }
 
 /** 开启动画 */
-- (void)startAnimating
-{
+- (void)startAnimating {
     static NSString *gradientStartPointKey = @"startPoint";
     static NSString *gradientEndPointKey = @"endPoint";
     
     CAGradientLayer *gradientLayer = (CAGradientLayer *)self.gradientLayer;
-    if([gradientLayer animationForKey:kAnimationKey] == nil)
-    {
+    if([gradientLayer animationForKey:kAnimationKey] == nil) {
         // 通过不断改变渐变的起止范围，来实现光晕效果
         CABasicAnimation *startPointAnimation = [CABasicAnimation animationWithKeyPath:gradientStartPointKey];
         startPointAnimation.toValue = [NSValue valueWithCGPoint:CGPointMake(1.0, 0)];
@@ -286,16 +276,15 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
 }
 
 /** 结束动画 */
-- (void)stopAnimating
-{
+- (void)stopAnimating {
     [self.gradientLayer removeFromSuperlayer];
-//    [self.gradientLayer removeAnimationForKey:kAnimationKey];
     self.gradientLayer = nil;
 }
 
-#pragma mark -- KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
-{
+#pragma mark KVO
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object change:(NSDictionary<NSString *,id> *)change
+                       context:(void *)context {
     if ([keyPath isEqualToString:@"contentSize"]) {
         contentSize = [[change valueForKey:NSKeyValueChangeNewKey]CGSizeValue];
         if (contentSize.height > 0.0) {
@@ -321,9 +310,8 @@ static NSString *const kAnimationKey = @"PDFooterRefreshViewAnimationKey";
     }
 }
 
-#pragma dealloc
+#pragma mark dealloc
 -(void)dealloc{
-    
     [self.associatedScrollView removeObserver:self forKeyPath:@"contentOffset"];
     [self.associatedScrollView removeObserver:self forKeyPath:@"contentSize"];
 }

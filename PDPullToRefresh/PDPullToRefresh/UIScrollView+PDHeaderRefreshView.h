@@ -12,6 +12,7 @@ typedef void(^ActionHandler)(void);
 
 @class PDHeaderRefreshView;
 @interface UIScrollView (PDHeaderRefreshView)
+
 /**
  *  下拉滑动距离 - 下拉View的高
  *   Default is 80
@@ -28,17 +29,22 @@ typedef void(^ActionHandler)(void);
  *
  *  @param actionHandler 回调
  */
-- (void)pd_addHeaderRefreshWithNavigationBar:(BOOL)navBar andActionHandler:(ActionHandler)actionHandler;
+- (void)pd_addHeaderRefreshWithNavigationBar:(BOOL)navBar
+                            andActionHandler:(ActionHandler)actionHandler;
 
 @end
 
 @interface PDHeaderRefreshView : UIView
 
-- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView withNavigationBar:(BOOL)navBar andRefreshViewHeight:(CGFloat)refreshViewHeight andActionHandler:(ActionHandler)actionHandler;
+- (instancetype)initWithAssociatedScrollView:(UIScrollView *)scrollView
+                           withNavigationBar:(BOOL)navBar
+                        andRefreshViewHeight:(CGFloat)refreshViewHeight
+                            andActionHandler:(ActionHandler)actionHandler;
 /**
  *  停止刷新
  */
 - (void)stopRefreshing;
+
 /**
  *  开始刷新
  */
